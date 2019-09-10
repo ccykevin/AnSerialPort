@@ -1,14 +1,15 @@
 package com.kevincheng.anserialport
 
+import android.os.Process
 import com.orhanobut.logger.Logger
 import java.io.IOException
 import java.io.InputStream
 
-class SerialPortListeningThread(private val mInputStream: InputStream, bufferSize: Int, val onDataReceived: (bytes: ByteArray) -> Unit) : Thread() {
+class SerialPortListeningThread(private val mInputStream: InputStream, bufferSize: Int, private val threadPriority: Int, val onDataReceived: (bytes: ByteArray) -> Unit) : Thread() {
     private val mReadBuffer: ByteArray = ByteArray(bufferSize)
 
     override fun run() {
-        super.run()
+        Process.setThreadPriority(threadPriority)
 
         while (!isInterrupted) {
             try {

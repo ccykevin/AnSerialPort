@@ -2,6 +2,7 @@ package com.kevincheng.anserialport
 
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.Process
 import android.os.Process.*
 import com.orhanobut.logger.Logger
 import java.io.*
@@ -18,7 +19,7 @@ class AnSerialPort(val device: File, val baudRate: Int, private val readBufferSi
         else -> null
     }
 
-    fun open(): Boolean {
+    fun open(priority: Int = THREAD_PRIORITY_DEFAULT): Boolean {
         when {
             fileDescriptor != null -> close()
         }
@@ -34,8 +35,8 @@ class AnSerialPort(val device: File, val baudRate: Int, private val readBufferSi
         try {
             fileDescriptor = nativeOpen(device.absolutePath, baudRate, 0)
             outputStream = FileOutputStream(fileDescriptor)
-            startSendThread()
-            startListeningThread(FileInputStream(fileDescriptor))
+            startSendThread(priority)
+            startListeningThread(FileInputStream(fileDescriptor), priority)
             listenerWeakReference?.get()?.onSuccessOpened(device)
             return true
         } catch (e: Exception) {
@@ -89,8 +90,8 @@ class AnSerialPort(val device: File, val baudRate: Int, private val readBufferSi
     // Sending Thread
     //================================================================================
 
-    private fun startSendThread() {
-        serialPortSendingThread = HandlerThread("AnSerialPort-SendingHandlerThread", THREAD_PRIORITY_BACKGROUND)
+    private fun startSendThread(priority: Int) {
+        serialPortSendingThread = HandlerThread("AnSerialPort-SendingHandlerThread", priority)
         serialPortSendingThread!!.start()
         serialPortSendingHandler = Handler(serialPortSendingThread!!.looper)
     }
@@ -111,9 +112,9 @@ class AnSerialPort(val device: File, val baudRate: Int, private val readBufferSi
     // Listening Thread
     //================================================================================
 
-    private fun startListeningThread(inputStream: InputStream) {
+    private fun startListeningThread(inputStream: InputStream, priority: Int) {
         val weakSelf: WeakReference<AnSerialPort> = WeakReference(this)
-        serialPortListeningThread = SerialPortListeningThread(inputStream, readBufferSize) {
+        serialPortListeningThread = SerialPortListeningThread(inputStream, readBufferSize, priority) {
             val self = weakSelf.get() ?: return@SerialPortListeningThread
             when {
                 self.fileDescriptor != null -> self.listenerWeakReference?.get()?.onDataReceived(it)
