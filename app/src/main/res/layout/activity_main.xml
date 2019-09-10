@@ -4,15 +4,177 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#33333C"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <TextView
+        android:id="@+id/textView_serial_port"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:text="Serial Port"/>
+
+    <Spinner
+        android:id="@+id/spinner_serial_port"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@id/textView_serial_port"
+        app:layout_constraintTop_toTopOf="@id/textView_serial_port"
+        app:layout_constraintBottom_toBottomOf="@id/textView_serial_port"/>
+
+    <TextView
+        android:id="@+id/textView_baud_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/spinner_serial_port"
+        app:layout_constraintTop_toTopOf="@id/spinner_serial_port"
+        app:layout_constraintBottom_toBottomOf="@id/spinner_serial_port"
+        android:layout_marginLeft="8dp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:text="Baud Rate"/>
+
+    <Spinner
+        android:id="@+id/spinner_baud_rate"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@id/textView_baud_rate"
+        app:layout_constraintTop_toTopOf="@id/textView_baud_rate"
+        app:layout_constraintBottom_toBottomOf="@id/textView_baud_rate"
+        android:spinnerMode="dialog"/>
+
+    <Button
+        android:id="@+id/button_enable_port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/spinner_baud_rate"
+        app:layout_constraintTop_toTopOf="@id/spinner_baud_rate"
+        app:layout_constraintBottom_toBottomOf="@id/spinner_baud_rate"
+        android:layout_marginLeft="8dp"
+        android:text="Open"/>
+
+    <LinearLayout
+        android:id="@+id/viewGroup_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="810dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/radioGroup"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/button_enable_port">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Outgoing Messages"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_outgoing_message"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Incoming Messages"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_incoming_message"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@id/editText_message"
+        app:layout_constraintBottom_toTopOf="@id/editText_message"
+        >
+
+        <RadioButton
+            android:id="@+id/radioButton_message_type_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#FFFFFF"
+            android:text="String"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/radioButton_message_type_hex_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:textColor="#FFFFFF"
+            android:text="Hex String" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/editText_message"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/button_sent_message"
+        app:layout_constraintBottom_toBottomOf="@id/button_sent_message"
+        app:layout_constraintRight_toLeftOf="@id/button_sent_message"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="#FFFFFF"/>
+
+    <Button
+        android:id="@+id/button_sent_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="SENT"
+        android:enabled="false"/>
 
 </android.support.constraint.ConstraintLayout>
