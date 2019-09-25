@@ -50,7 +50,6 @@ class AnSerialPort(val device: File, val baudRate: Int, private val readBufferSi
     fun close() {
         when {
             fileDescriptor != null -> {
-                nativeClose()
                 fileDescriptor = null
                 stopSendThread()
                 stopListeningThread()
